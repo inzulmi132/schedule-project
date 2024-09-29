@@ -10,24 +10,24 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Schedule {
     private Long id;
-    private String name;
+    private String username;
     private String password;
     private String todo;
-    private String create;
-    private String edit;
+    private String created;
+    private String edited;
 
     public Schedule(ScheduleRequestDto requestDto) {
-        this.name = requestDto.getName();
+        this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.todo = requestDto.getTodo();
-        this.create = requestDto.getDate();
-        this.edit = requestDto.getDate();
+        this.created = requestDto.getDate();
+        this.edited = requestDto.getDate();
     }
 
     public void update(ScheduleRequestDto requestDto) {
-        this.name = requestDto.getName();
+        this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.todo = requestDto.getTodo();
-        this.edit = requestDto.getDate();
+        this.edited = requestDto.getDate();
     }
 }
