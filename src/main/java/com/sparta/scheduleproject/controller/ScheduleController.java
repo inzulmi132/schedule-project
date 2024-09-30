@@ -48,7 +48,7 @@ public class ScheduleController {
         if(username != null && updated_date != null) sql += " WHERE USERNAME = " + username + " AND UPDATED_DATE LIKE " + updated_date + "%";
         else if(username != null) sql += " WHERE USERNAME = " + username;
         else if(updated_date != null) sql += " WHERE UPDATED_DATE LIKE '" + updated_date + "%'";
-        sql += " ORDER BY EDITED_DATE DESC";
+        sql += " ORDER BY UPDATED_DATE DESC";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
                 Long id = rs.getLong("id");
