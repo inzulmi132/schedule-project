@@ -13,21 +13,21 @@ public class Schedule {
     private String username;
     private String password;
     private String todo;
-    private String created;
-    private String edited;
+    private String created_date;
+    private String edited_date;
 
     public Schedule(ScheduleRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.todo = requestDto.getTodo();
-        this.created = requestDto.getDate();
-        this.edited = requestDto.getDate();
+        this.created_date = requestDto.getDate();
+        this.edited_date = requestDto.getDate();
     }
 
     public void update(ScheduleRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.todo = requestDto.getTodo();
-        this.edited = requestDto.getDate();
+        this.edited_date = requestDto.getDate();
     }
 }
