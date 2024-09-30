@@ -8,22 +8,22 @@ public class ScheduleResponseDto {
     private Long id;
     private String username;
     private String todo;
-    private String created_date;
-    private String updated_date;
+    private String create_date;
+    private String update_date;
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.username = schedule.getUsername();
         this.todo = schedule.getTodo();
-        this.created_date = schedule.getCreated_date();
-        this.updated_date = schedule.getUpdated_date();
+        this.create_date = schedule.getCreate_date();
+        this.update_date = schedule.getUpdate_date();
     }
 
-    public ScheduleResponseDto(Long id, String username, String todo, String created_date, String updated_date) {
+    public ScheduleResponseDto(Long id, String username, String todo, String create_date, String update_date) {
         this.id = id;
         this.username = username;
         this.todo = todo;
-        this.created_date = created_date;
-        this.updated_date = updated_date;
+        this.create_date = create_date;
+        this.update_date = update_date;
     }
 }
