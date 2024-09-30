@@ -27,7 +27,7 @@ public class ScheduleController {
         Schedule schedule = new Schedule(requestDto);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO SCHEDULE (USERNAME, PASSWORD, TODO, CREATED_DATE, EDIT_DATE) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO SCHEDULE (USERNAME, PASSWORD, TODO, CREATED_DATE, EDITED_DATE) VALUES (?,?,?,?,?)";
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, schedule.getUsername());
@@ -44,11 +44,11 @@ public class ScheduleController {
 
     @GetMapping("/schedules")
     public List<ScheduleResponseDto> getAllSchedules(@RequestParam(required = false) String username, @RequestParam(required = false) String edited_date) {
-        String sql = "SELECT ID, USERNAME, TODO, CREATED_DATE, EDIT_DATE FROM SCHEDULE";
-        if(username != null && edited_date != null) sql += " WHERE USERNAME = " + username + " AND EDIT_DATE LIKE " + edited_date + "%";
+        String sql = "SELECT ID, USERNAME, TODO, CREATED_DATE, EDITED_DATE FROM SCHEDULE";
+        if(username != null && edited_date != null) sql += " WHERE USERNAME = " + username + " AND EDITED_DATE LIKE " + edited_date + "%";
         else if(username != null) sql += " WHERE USERNAME = " + username;
-        else if(edited_date != null) sql += " WHERE EDIT_DATE LIKE " + edited_date + "%";
-        sql += " ORDER BY EDIT DESC";
+        else if(edited_date != null) sql += " WHERE EDITED_DATE LIKE '" + edited_date + "%'";
+        sql += " ORDER BY EDITED_DATE DESC";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
                 Long id = rs.getLong("id");
@@ -74,7 +74,7 @@ public class ScheduleController {
         Schedule schedule = findByIdPw(id, password);
         if(schedule == null) throw new RuntimeException("Schedule not found");
 
-        String sql = "UPDATE SCHEDULE SET USERNAME = ?, TODO = ?, EDIT_DATE = ? WHERE ID = ? AND PASSWORD = ?";
+        String sql = "UPDATE SCHEDULE SET USERNAME = ?, TODO = ?, EDITED_DATE = ? WHERE ID = ? AND PASSWORD = ?";
         jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getTodo(), requestDto.getDatetime(), id, password);
         return id;
     }
