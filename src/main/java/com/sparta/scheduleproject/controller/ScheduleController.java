@@ -45,9 +45,9 @@ public class ScheduleController {
     @GetMapping("/schedules")
     public List<ScheduleResponseDto> getAllSchedules(@RequestParam(required = false) String username, @RequestParam(required = false) String edited_date) {
         String sql = "SELECT ID, USERNAME, TODO, CREATED_DATE, EDIT_DATE FROM SCHEDULE";
-        if(username != null && edited_date != null) sql += " WHERE USERNAME = " + username + " AND EDIT_DATE = " + edited_date;
+        if(username != null && edited_date != null) sql += " WHERE USERNAME = " + username + " AND EDIT_DATE LIKE " + edited_date + "%";
         else if(username != null) sql += " WHERE USERNAME = " + username;
-        else if(edited_date != null) sql += " WHERE EDIT_DATE = " + edited_date;
+        else if(edited_date != null) sql += " WHERE EDIT_DATE LIKE " + edited_date + "%";
         sql += " ORDER BY EDIT DESC";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -69,7 +69,8 @@ public class ScheduleController {
     }
 
     @PutMapping("/schedules")
-    public Long updateSchedule(@RequestParam Long id, @RequestParam String password, @RequestBody ScheduleRequestDto requestDto) {
+    public Long updateSchedule(@RequestParam Long id, @RequestBody ScheduleRequestDto requestDto) {
+        String password = requestDto.getPassword();
         Schedule schedule = findByIdPw(id, password);
         if(schedule == null) throw new RuntimeException("Schedule not found");
 

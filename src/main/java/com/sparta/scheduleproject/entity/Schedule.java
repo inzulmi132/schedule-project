@@ -20,14 +20,14 @@ public class Schedule {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.todo = requestDto.getTodo();
-        this.created_date = requestDto.getDate();
-        this.edited_date = requestDto.getDate();
+        this.created_date = requestDto.getDatetime();
+        this.edited_date = requestDto.getDatetime();
     }
 
     public void update(ScheduleRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.todo = requestDto.getTodo();
-        this.edited_date = requestDto.getDate();
+        this.edited_date = requestDto.getDatetime();
     }
 }
