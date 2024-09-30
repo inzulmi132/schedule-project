@@ -27,14 +27,14 @@ public class ScheduleController {
         Schedule schedule = new Schedule(requestDto);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO SCHEDULE (USERNAME, PASSWORD, TODO, CREATED_DATE, EDITED_DATE) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO SCHEDULE (USERNAME, PASSWORD, TODO, CREATED_DATE, UPDATED_DATE) VALUES (?,?,?,?,?)";
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, schedule.getUsername());
             ps.setString(2, schedule.getPassword());
             ps.setString(3, schedule.getTodo());
             ps.setString(4, schedule.getCreated_date());
-            ps.setString(5, schedule.getEdited_date());
+            ps.setString(5, schedule.getUpdated_date());
             return ps;
         }, keyHolder);
         schedule.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
@@ -43,11 +43,11 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedules")
-    public List<ScheduleResponseDto> getAllSchedules(@RequestParam(required = false) String username, @RequestParam(required = false) String edited_date) {
-        String sql = "SELECT ID, USERNAME, TODO, CREATED_DATE, EDITED_DATE FROM SCHEDULE";
-        if(username != null && edited_date != null) sql += " WHERE USERNAME = " + username + " AND EDITED_DATE LIKE " + edited_date + "%";
+    public List<ScheduleResponseDto> getAllSchedules(@RequestParam(required = false) String username, @RequestParam(required = false) String updated_date) {
+        String sql = "SELECT ID, USERNAME, TODO, CREATED_DATE, UPDATED_DATE FROM SCHEDULE";
+        if(username != null && updated_date != null) sql += " WHERE USERNAME = " + username + " AND UPDATED_DATE LIKE " + updated_date + "%";
         else if(username != null) sql += " WHERE USERNAME = " + username;
-        else if(edited_date != null) sql += " WHERE EDITED_DATE LIKE '" + edited_date + "%'";
+        else if(updated_date != null) sql += " WHERE UPDATED_DATE LIKE '" + updated_date + "%'";
         sql += " ORDER BY EDITED_DATE DESC";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -55,8 +55,8 @@ public class ScheduleController {
                 String username0 = rs.getString("username");
                 String todo = rs.getString("todo");
                 String created_date = rs.getString("created_date");
-                String edited_date0 = rs.getString("edited_date");
-                return new ScheduleResponseDto(id, username0, todo, created_date, edited_date0);
+                String updated_date0 = rs.getString("updated_date");
+                return new ScheduleResponseDto(id, username0, todo, created_date, updated_date0);
         });
     }
 
@@ -74,7 +74,7 @@ public class ScheduleController {
         Schedule schedule = findByIdPw(id, password);
         if(schedule == null) throw new RuntimeException("Schedule not found");
 
-        String sql = "UPDATE SCHEDULE SET USERNAME = ?, TODO = ?, EDITED_DATE = ? WHERE ID = ? AND PASSWORD = ?";
+        String sql = "UPDATE SCHEDULE SET USERNAME = ?, TODO = ?, UPDATED_DATE = ? WHERE ID = ? AND PASSWORD = ?";
         jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getTodo(), requestDto.getDatetime(), id, password);
         return id;
     }
@@ -99,7 +99,7 @@ public class ScheduleController {
             schedule.setPassword(resultset.getString("password"));
             schedule.setTodo(resultset.getString("todo"));
             schedule.setCreated_date(resultset.getString("created_date"));
-            schedule.setEdited_date(resultset.getString("edited_date"));
+            schedule.setUpdated_date(resultset.getString("updated_date"));
             return schedule;
         }, id);
     }
@@ -114,7 +114,7 @@ public class ScheduleController {
             schedule.setPassword(resultset.getString("password"));
             schedule.setTodo(resultset.getString("todo"));
             schedule.setCreated_date(resultset.getString("created_date"));
-            schedule.setEdited_date(resultset.getString("edited_date"));
+            schedule.setUpdated_date(resultset.getString("updated_date"));
             return schedule;
         }, id, password);
     }
