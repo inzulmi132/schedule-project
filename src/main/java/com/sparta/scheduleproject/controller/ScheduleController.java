@@ -74,7 +74,7 @@ public class ScheduleController {
         if(schedule == null) throw new RuntimeException("Schedule not found");
 
         String sql = "UPDATE SCHEDULE SET USERNAME = ?, TODO = ?, EDIT_DATE = ? WHERE ID = ? AND PASSWORD = ?";
-        jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getTodo(), requestDto.getDate(), id, password);
+        jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getTodo(), requestDto.getDatetime(), id, password);
         return id;
     }
 
