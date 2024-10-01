@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -24,20 +23,16 @@ public class ScheduleController {
 
     @PostMapping("/schedules")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
-        Schedule schedule = new Schedule(requestDto);
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO SCHEDULE (USERNAME, PASSWORD, TODO, CREATE_DATE, UPDATE_DATE) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO SCHEDULE (USERNAME, PASSWORD, TODO) VALUES (?,?,?)";
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, schedule.getUsername());
-            ps.setString(2, schedule.getPassword());
-            ps.setString(3, schedule.getTodo());
-            ps.setString(4, schedule.getCreate_date());
-            ps.setString(5, schedule.getUpdate_date());
+            ps.setString(1, requestDto.getUsername());
+            ps.setString(2, requestDto.getPassword());
+            ps.setString(3, requestDto.getTodo());
             return ps;
         }, keyHolder);
-        schedule.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        Schedule schedule = findById(Objects.requireNonNull(keyHolder.getKey()).longValue());
 
         return new ScheduleResponseDto(schedule);
     }
@@ -74,8 +69,8 @@ public class ScheduleController {
         Schedule schedule = findByIdPw(id, password);
         if(schedule == null) throw new RuntimeException("Schedule not found");
 
-        String sql = "UPDATE SCHEDULE SET USERNAME = ?, TODO = ?, UPDATE_DATE = ? WHERE ID = ? AND PASSWORD = ?";
-        jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getTodo(), requestDto.getDatetime(), id, password);
+        String sql = "UPDATE SCHEDULE SET USERNAME = ?, TODO = ?, UPDATE_DATE = CURRENT_TIMESTAMP WHERE ID = ? AND PASSWORD = ?";
+        jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getTodo(), id, password);
         return id;
     }
 
