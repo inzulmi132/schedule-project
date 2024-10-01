@@ -9,6 +9,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
@@ -33,7 +35,6 @@ public class ScheduleController {
             return ps;
         }, keyHolder);
         Schedule schedule = findById(Objects.requireNonNull(keyHolder.getKey()).longValue());
-
         return new ScheduleResponseDto(schedule);
     }
 
@@ -84,33 +85,24 @@ public class ScheduleController {
         return id;
     }
 
+
     private Schedule findById(Long id) {
         String sql = "SELECT * FROM SCHEDULE WHERE ID = ?";
-        return jdbcTemplate.query(sql, resultset -> {
-            if(!resultset.next()) return null;
-            Schedule schedule = new Schedule();
-            schedule.setId(resultset.getLong("id"));
-            schedule.setUsername(resultset.getString("username"));
-            schedule.setPassword(resultset.getString("password"));
-            schedule.setTodo(resultset.getString("todo"));
-            schedule.setCreate_date(resultset.getString("create_date"));
-            schedule.setUpdate_date(resultset.getString("update_date"));
-            return schedule;
-        }, id);
+        return jdbcTemplate.query(sql, this::findBy, id);
     }
-
     private Schedule findByIdPw(Long id, String password) {
         String sql = "SELECT * FROM SCHEDULE WHERE ID = ? AND PASSWORD = ?";
-        return jdbcTemplate.query(sql, resultset -> {
-            if(!resultset.next()) return null;
-            Schedule schedule = new Schedule();
-            schedule.setId(resultset.getLong("id"));
-            schedule.setUsername(resultset.getString("username"));
-            schedule.setPassword(resultset.getString("password"));
-            schedule.setTodo(resultset.getString("todo"));
-            schedule.setCreate_date(resultset.getString("create_date"));
-            schedule.setUpdate_date(resultset.getString("update_date"));
-            return schedule;
-        }, id, password);
+        return jdbcTemplate.query(sql, this::findBy, id, password);
+    }
+    private Schedule findBy(ResultSet resultset) throws SQLException {
+        if(!resultset.next()) return null;
+        Schedule schedule = new Schedule();
+        schedule.setId(resultset.getLong("id"));
+        schedule.setUsername(resultset.getString("username"));
+        schedule.setPassword(resultset.getString("password"));
+        schedule.setTodo(resultset.getString("todo"));
+        schedule.setCreate_date(resultset.getString("create_date"));
+        schedule.setUpdate_date(resultset.getString("update_date"));
+        return schedule;
     }
 }
