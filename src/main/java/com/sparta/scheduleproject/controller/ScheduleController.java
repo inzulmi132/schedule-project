@@ -39,18 +39,28 @@ public class ScheduleController {
     @GetMapping("/schedules")
     public List<ScheduleResponseDto> getAllSchedules(@RequestParam(required = false) String username, @RequestParam(required = false) String update_date) {
         String sql = "SELECT ID, USERNAME, TODO, CREATE_DATE, UPDATE_DATE FROM SCHEDULE";
-        if(username != null && update_date != null) sql += " WHERE USERNAME = " + username + " AND UPDATE_DATE LIKE " + update_date + "%";
-        else if(username != null) sql += " WHERE USERNAME = " + username;
+        if(username != null && update_date != null) sql += " WHERE USERNAME = '" + username + "' AND UPDATE_DATE LIKE '" + update_date + "%'";
+        else if(username != null) sql += " WHERE USERNAME = '" + username + "'";
         else if(update_date != null) sql += " WHERE UPDATE_DATE LIKE '" + update_date + "%'";
         sql += " ORDER BY UPDATE_DATE DESC";
+        return getScheduleList(sql);
+    }
 
+    @GetMapping("/schedules/{page}/{size}")
+    public List<ScheduleResponseDto> getPageSchedules(@PathVariable int page, @PathVariable int size) {
+        int offset = (page - 1) * size;
+        String sql = "SELECT ID, USERNAME, TODO, CREATE_DATE, UPDATE_DATE FROM SCHEDULE LIMIT " + size + " OFFSET " + offset;
+        return getScheduleList(sql);
+    }
+
+    public List<ScheduleResponseDto> getScheduleList(String sql) {
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
-                Long id = rs.getLong("id");
-                String username1 = rs.getString("username");
-                String todo = rs.getString("todo");
-                String create_date = rs.getString("create_date");
-                String update_date1 = rs.getString("update_date");
-                return new ScheduleResponseDto(id, username1, todo, create_date, update_date1);
+            Long id = rs.getLong("id");
+            String username = rs.getString("username");
+            String todo = rs.getString("todo");
+            String create_date = rs.getString("create_date");
+            String update_date = rs.getString("update_date");
+            return new ScheduleResponseDto(id, username, todo, create_date, update_date);
         });
     }
 
