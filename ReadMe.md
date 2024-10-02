@@ -211,4 +211,4 @@
 
 - ERD
 
-![scheduleERD.png](scheduleERD.png)
+    <img height="1000" src="scheduleERD.png" width="600"/>
