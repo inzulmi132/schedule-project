@@ -9,8 +9,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
@@ -34,7 +32,7 @@ public class ScheduleController {
             ps.setString(3, requestDto.getTodo());
             return ps;
         }, keyHolder);
-        Schedule schedule = findById(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        Schedule schedule = findBy(Objects.requireNonNull(keyHolder.getKey()).longValue());
         return new ScheduleResponseDto(schedule);
     }
 
@@ -58,7 +56,7 @@ public class ScheduleController {
 
     @GetMapping("/schedules/{id}")
     public ScheduleResponseDto getOneSchedule(@PathVariable Long id) {
-        Schedule schedule = findById(id);
+        Schedule schedule = findBy(id);
         if(schedule == null) throw new RuntimeException("Schedule not found");
 
         return new ScheduleResponseDto(schedule);
@@ -67,7 +65,7 @@ public class ScheduleController {
     @PutMapping("/schedules")
     public Long updateSchedule(@RequestParam Long id, @RequestBody ScheduleRequestDto requestDto) {
         String password = requestDto.getPassword();
-        Schedule schedule = findByIdPw(id, password);
+        Schedule schedule = findBy(id, password);
         if(schedule == null) throw new RuntimeException("Schedule not found");
 
         String sql = "UPDATE SCHEDULE SET USERNAME = ?, TODO = ?, UPDATE_DATE = CURRENT_TIMESTAMP WHERE ID = ? AND PASSWORD = ?";
@@ -77,7 +75,7 @@ public class ScheduleController {
 
     @DeleteMapping("/schedules")
     public Long deleteSchedule(@RequestParam Long id, @RequestParam String password) {
-        Schedule schedule = findByIdPw(id, password);
+        Schedule schedule = findBy(id, password);
         if(schedule == null) throw new RuntimeException("Schedule not found");
 
         String sql = "DELETE FROM SCHEDULE WHERE ID = ? AND PASSWORD = ?";
@@ -86,23 +84,22 @@ public class ScheduleController {
     }
 
 
-    private Schedule findById(Long id) {
-        String sql = "SELECT * FROM SCHEDULE WHERE ID = ?";
-        return jdbcTemplate.query(sql, this::findBy, id);
+    private Schedule findBy(Long id) {
+        return findBy(id, null);
     }
-    private Schedule findByIdPw(Long id, String password) {
-        String sql = "SELECT * FROM SCHEDULE WHERE ID = ? AND PASSWORD = ?";
-        return jdbcTemplate.query(sql, this::findBy, id, password);
-    }
-    private Schedule findBy(ResultSet resultset) throws SQLException {
-        if(!resultset.next()) return null;
-        Schedule schedule = new Schedule();
-        schedule.setId(resultset.getLong("id"));
-        schedule.setUsername(resultset.getString("username"));
-        schedule.setPassword(resultset.getString("password"));
-        schedule.setTodo(resultset.getString("todo"));
-        schedule.setCreate_date(resultset.getString("create_date"));
-        schedule.setUpdate_date(resultset.getString("update_date"));
-        return schedule;
+    private Schedule findBy(Long id, String password) {
+        String sql = "SELECT * FROM SCHEDULE WHERE ID = " + id;
+        if(password != null) sql += " AND PASSWORD = " + password;
+        return jdbcTemplate.query(sql, resultset -> {
+            if(!resultset.next()) return null;
+            Schedule schedule = new Schedule();
+            schedule.setId(resultset.getLong("id"));
+            schedule.setUsername(resultset.getString("username"));
+            schedule.setPassword(resultset.getString("password"));
+            schedule.setTodo(resultset.getString("todo"));
+            schedule.setCreate_date(resultset.getString("create_date"));
+            schedule.setUpdate_date(resultset.getString("update_date"));
+            return schedule;
+        });
     }
 }
