@@ -46,6 +46,14 @@ public class ScheduleController {
         return getScheduleList(sql);
     }
 
+    @GetMapping("/schedules/{id}")
+    public ScheduleResponseDto getOneSchedule(@PathVariable Long id) {
+        Schedule schedule = findBy(id);
+        if(schedule == null) throw new RuntimeException("Schedule not found");
+
+        return new ScheduleResponseDto(schedule);
+    }
+
     @GetMapping("/schedules/{page}/{size}")
     public List<ScheduleResponseDto> getPageSchedules(@PathVariable int page, @PathVariable int size) {
         int offset = (page - 1) * size;
@@ -62,14 +70,6 @@ public class ScheduleController {
             String update_date = rs.getString("update_date");
             return new ScheduleResponseDto(id, username, todo, create_date, update_date);
         });
-    }
-
-    @GetMapping("/schedules/{id}")
-    public ScheduleResponseDto getOneSchedule(@PathVariable Long id) {
-        Schedule schedule = findBy(id);
-        if(schedule == null) throw new RuntimeException("Schedule not found");
-
-        return new ScheduleResponseDto(schedule);
     }
 
     @PutMapping("/schedules")
