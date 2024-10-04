@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/schedules")
 public class ScheduleController {
     private final JdbcTemplate jdbcTemplate;
 
@@ -21,7 +21,7 @@ public class ScheduleController {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @PostMapping("/schedules")
+    @PostMapping("")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO SCHEDULE (USERNAME, PASSWORD, TODO) VALUES (?,?,?)";
@@ -36,7 +36,7 @@ public class ScheduleController {
         return new ScheduleResponseDto(schedule);
     }
 
-    @GetMapping("/schedules")
+    @GetMapping("")
     public List<ScheduleResponseDto> getAllSchedules(@RequestParam(required = false) String username, @RequestParam(required = false) String update_date) {
         String sql = "SELECT ID, USERNAME, TODO, CREATE_DATE, UPDATE_DATE FROM SCHEDULE";
         if(username != null && update_date != null) sql += " WHERE USERNAME = '" + username + "' AND UPDATE_DATE LIKE '" + update_date + "%'";
@@ -46,7 +46,7 @@ public class ScheduleController {
         return getScheduleList(sql);
     }
 
-    @GetMapping("/schedules/{id}")
+    @GetMapping("/{id}")
     public ScheduleResponseDto getOneSchedule(@PathVariable Long id) {
         Schedule schedule = findBy(id);
         if(schedule == null) throw new RuntimeException("Schedule not found");
@@ -54,7 +54,7 @@ public class ScheduleController {
         return new ScheduleResponseDto(schedule);
     }
 
-    @GetMapping("/schedules/{page}/{size}")
+    @GetMapping("/{page}/{size}")
     public List<ScheduleResponseDto> getPageSchedules(@PathVariable int page, @PathVariable int size) {
         int offset = (page - 1) * size;
         String sql = "SELECT ID, USERNAME, TODO, CREATE_DATE, UPDATE_DATE FROM SCHEDULE LIMIT " + size + " OFFSET " + offset;
@@ -72,7 +72,7 @@ public class ScheduleController {
         });
     }
 
-    @PutMapping("/schedules")
+    @PutMapping("")
     public Long updateSchedule(@RequestParam Long id, @RequestBody ScheduleRequestDto requestDto) {
         String password = requestDto.getPassword();
         Schedule schedule = findBy(id, password);
@@ -83,7 +83,7 @@ public class ScheduleController {
         return id;
     }
 
-    @DeleteMapping("/schedules")
+    @DeleteMapping("")
     public Long deleteSchedule(@RequestParam Long id, @RequestParam String password) {
         Schedule schedule = findBy(id, password);
         if(schedule == null) throw new RuntimeException("Schedule not found");

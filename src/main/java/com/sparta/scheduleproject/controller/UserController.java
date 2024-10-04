@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
     private final JdbcTemplate jdbcTemplate;
 
@@ -18,7 +18,7 @@ public class UserController {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @PostMapping("/users")
+    @PostMapping("")
     public UserResponseDto createUser(@RequestBody UserRequestDto requestDto) {
         String sql = "INSERT INTO USER (USERNAME, PASSWORD, EMAIL) VALUES (?,?,?)";
         jdbcTemplate.update(con -> {
@@ -32,7 +32,7 @@ public class UserController {
         return new UserResponseDto(user);
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     public List<UserResponseDto> getAllUsers() {
         String sql = "SELECT USERNAME, EMAIL, CREATE_DATE, UPDATE_DATE FROM USER ORDER BY CREATE_DATE";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -44,7 +44,7 @@ public class UserController {
         } );
     }
 
-    @PutMapping("/users")
+    @PutMapping("")
     public String updateUser(@RequestParam String username, @RequestParam String password, @RequestBody UserRequestDto requestDto) {
         User user = findByUnPw(username, password);
         if(user == null) throw new RuntimeException("User not found");
@@ -54,7 +54,7 @@ public class UserController {
         return username;
     }
 
-    @DeleteMapping("/users")
+    @DeleteMapping("")
     public String deleteUser(@RequestParam String username, @RequestParam String password) {
         User user = findByUnPw(username, password);
         if(user == null) throw new RuntimeException("User not found");
