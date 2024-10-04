@@ -1,11 +1,8 @@
 # 일정 관리 앱 만들기
 
 ---
-## 필수 기능
-### Lv1. API 명세서 및 ERD 작성
-
-- #### API 명세서
-  - 일정 등록
+- ### API 명세서
+  - #### 일정 등록
     - Method = POST
     - URL = /api/schedules
     - Request
@@ -27,7 +24,7 @@
       }
       ```
 
-  - 일정 목록 조회
+  - #### 일정 목록 조회
     - Method = GET
     - URL = /api/schedules
     - Request
@@ -53,7 +50,7 @@
       ]
       ```
 
-  - 일정 조회
+  - #### 일정 조회
     - Method = GET
     - URL = /api/schedules/{id}
     - Request
@@ -71,7 +68,7 @@
       }
       ```
 
-  - 일정 페이지 조회
+  - #### 일정 페이지 조회
     - Method = GET
     - URL = /api/schedules/{page}/{size}
     - Request
@@ -94,7 +91,7 @@
       ]
       ```
 
-  - 일정 수정
+  - #### 일정 수정
     - Method = PUT
     - URL = /api/schedules
     - Request
@@ -113,7 +110,7 @@
       }
       ```
 
-  - 일정 삭제
+  - #### 일정 삭제
     - Method = DELETE
     - URL = /api/schedules
     - Request
@@ -130,7 +127,7 @@
       }
       ```
 
-  - 사용자 등록
+  - #### 사용자 등록
     - Method = POST
     - URL = /api/users
     - Request
@@ -151,7 +148,7 @@
       }
       ```
 
-  - 사용자 목록 조회
+  - #### 사용자 목록 조회
     - Method = GET
     - URL = /api/users
     - Request
@@ -173,7 +170,7 @@
       ]
       ```
 
-  - 사용자 수정
+  - #### 사용자 수정
     - Method = PUT
     - URL = /api/users
     - Request
@@ -190,7 +187,7 @@
       }
       ```
 
-  - 사용자 삭제
+  - #### 사용자 삭제
     - Method = DELETE
     - URL = /api/users
     - Request
@@ -206,9 +203,8 @@
         "username" : "string"
       }
       ```
+---
+- ### ERD
 
-
-
-- ERD
-
-    <img height="1000" src="scheduleERD.png" width="600"/>
+    <img height="1000" src="scheduleERD.png" width="500"/>
+---
