@@ -16,7 +16,6 @@ import java.util.*;
 @RequestMapping("/api/schedules")
 public class ScheduleController {
     private final JdbcTemplate jdbcTemplate;
-
     public ScheduleController(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -92,7 +91,6 @@ public class ScheduleController {
         jdbcTemplate.update(sql, id, password);
         return id;
     }
-
 
     private Schedule findBy(Long id) {
         return findBy(id, null);
