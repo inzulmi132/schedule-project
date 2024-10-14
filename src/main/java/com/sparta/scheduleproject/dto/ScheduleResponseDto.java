@@ -1,9 +1,11 @@
 package com.sparta.scheduleproject.dto;
 
 import com.sparta.scheduleproject.entity.Schedule;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class ScheduleResponseDto {
     private Long id;
     private String username;
@@ -17,13 +19,5 @@ public class ScheduleResponseDto {
         this.todo = schedule.getTodo();
         this.create_date = schedule.getCreate_date();
         this.update_date = schedule.getUpdate_date();
-    }
-
-    public ScheduleResponseDto(Long id, String username, String todo, String create_date, String update_date) {
-        this.id = id;
-        this.username = username;
-        this.todo = todo;
-        this.create_date = create_date;
-        this.update_date = update_date;
     }
 }
